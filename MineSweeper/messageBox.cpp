@@ -8,4 +8,5 @@ MessageBox::MessageBox(QWidget *parent):QMessageBox(parent)
   //  setText("你赢了！");
     addButton(tr("新游戏"),QMessageBox::YesRole);
     addButton(tr("返回"),QMessageBox::NoRole);
+    resize(200,300);
 }

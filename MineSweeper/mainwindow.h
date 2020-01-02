@@ -24,6 +24,7 @@ public slots:
 public:
     MainWindow(QWidget *parent = nullptr);
     void newGame();
+    void initChess();
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
