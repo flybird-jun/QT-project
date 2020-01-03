@@ -13,6 +13,10 @@ openItem* ItemState::ItemStateChangeToOpenItem()
     ItemType *m_type = GetItemType();
     return new openItem(m_type);
 }
+openItem::openItem(ItemType *ptype):ItemState(ptype)
+{
+   // ptype->disconnect();
+}
 ItemState* tipItem::ItemStateChange()
 {
     return new normalItem(type);

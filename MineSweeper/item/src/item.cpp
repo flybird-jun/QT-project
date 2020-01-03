@@ -24,8 +24,9 @@ void Item::mousePressEvent(QMouseEvent *evt)
         delete pState;
         pState=iState;
         pState->GetItemType()->__mousePressEvent(evt);
+        pState->GetItemType()->disconnect();
     }
-    update();
+    repaint();
 }
 void Item::changeState(ItemState *state)
 {

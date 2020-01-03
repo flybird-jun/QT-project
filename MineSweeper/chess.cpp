@@ -8,7 +8,7 @@ ChessWidget::ChessWidget(int col,int row,int iCellWidth,QWidget *parent):QWidget
     this->row = row;
     this->col = col;
     num_item = row*col;
-    mine_num = num_item/6;
+    mine_num = num_item/8;
     //ChessWidget width and height;
     int width = row*CellWidth;
     int height = col * CellWidth;
@@ -20,6 +20,7 @@ void ChessWidget::initItems()
 {
     QVector<QPoint>m_mines;
     //alloc m_items
+    open_item_count = 0;
     m_items = new Item**[row];
     for(int i=0;i<col;i++)
         m_items[i] = new Item*[row];
@@ -45,7 +46,7 @@ void ChessWidget::initItems()
     //创建雷对象
     for(auto it:m_mines)
     {
-        ItemType *type=new MineItem(QRect(it.x()*CellWidth,it.y()*CellWidth,CellWidth,CellWidth));
+        ItemType *type=new MineItem(QRect(it.y()*CellWidth,it.x()*CellWidth,CellWidth,CellWidth));
         ItemState * state = new normalItem(type);
         Item *pitem = new Item(state);
         m_items[it.x()][it.y()]=pitem;
@@ -76,7 +77,7 @@ void ChessWidget::initItems()
                         }
                     }
                 }
-                ItemType *type=new NumItem(QRect(i*CellWidth,j*CellWidth,CellWidth,CellWidth),num);
+                ItemType *type=new NumItem(QRect(j*CellWidth,i*CellWidth,CellWidth,CellWidth),num);
                 ItemState * state = new normalItem(type);
                 Item *pitem = new Item(state);
                 connect(dynamic_cast<NumItem*>(type),&NumItem::pressNumItem,this,&ChessWidget::numItemPressSlot);
@@ -106,13 +107,79 @@ void ChessWidget::releaseItems()
         delete [] m_items;
     m_items = nullptr;
 }
-void ChessWidget::numItemPressSlot()
+void ChessWidget::openAround(int i,int j)
 {
+
+  //  if(m_items[i][j]->state()->GetItemType()->flag)
+  //     return;
+
+   // open_item_count ++;
+    int around[4][2]={
+            {-1,0},
+            {1,0},
+            {0,-1},
+            {0,1}
+    };
+
+    for(int x=0;x<4;x++)
+    {
+        int a = around[x][0];
+        int b = around[x][1];
+        int p = i+a;
+        if(p<0)
+        {
+            p=0;
+        }
+        if(p>col-1)
+        {
+            p=col-1;
+        }
+        int q = j+b;
+        if(q<0)
+        {
+            q = 0;
+        }
+        if(q>row-1)
+        {
+            q=row-1;
+        }
+        ItemType *_item =m_items[p][q]->state()->GetItemType();
+        if(_item->AroundShow()&&!_item->flag)
+        {
+            NumItem *pitem = dynamic_cast<NumItem *>(_item);
+            ItemState*pState=m_items[p][q]->state();//->ItemStateChangeToOpenItem();
+            m_items[p][q]->changeState(pState->ItemStateChangeToOpenItem());
+            m_items[p][q]->state()->GetItemType()->disconnect();
+            m_items[p][q]->state()->GetItemType()->flag = true;
+            delete pState;
+            open_item_count ++;
+            if(pitem->number()==0)
+            {
+               openAround(p,q);
+            }
+        }
+    }
+
+}
+void ChessWidget::numItemPressSlot(int num,QRect rect)
+{
+
+    int x = rect.x();
+    int y = rect.y();
+    int i = x/CellWidth;
+    int j = y/CellWidth;
     open_item_count++;
+    m_items[j][i]->state()->GetItemType()->flag = true;
+    if(num == 0)
+    {
+        openAround(j,i);
+    }
+
     if(open_item_count==num_item-mine_num)
     {
         emit GameWin();
     }
+    repaint();
 }
 
 void ChessWidget::mineItemPressSlot()

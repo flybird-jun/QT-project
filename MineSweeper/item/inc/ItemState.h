@@ -34,7 +34,7 @@ public:
 class openItem:public ItemState
 {
   public:
-    using ItemState::ItemState;
+    openItem(ItemType *ptype);
     ItemState* ItemStateChange();
     virtual void show(QWidget *pwidget);
     ~openItem(){}

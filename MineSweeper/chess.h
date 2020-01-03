@@ -15,12 +15,13 @@ signals:
     void GameWin();
     void GameLoss();
 public slots:
-    void numItemPressSlot();
+    void numItemPressSlot(int num,QRect rect);
     void mineItemPressSlot();
 public:
     ChessWidget(int col,int row,int CellWidth,QWidget *parent);
     void initItems();
     void releaseItems();
+    void openAround(int i,int j);
     virtual ~ChessWidget();
    // void paintEvent(QPaintEvent *event);
 };

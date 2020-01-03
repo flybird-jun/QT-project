@@ -20,18 +20,26 @@ void ItemType::__mousePressEvent(QMouseEvent *evt)
 NumItem::NumItem(QRect irect,int num):ItemType(irect)
 {
     this->num = num;
+    flag = false;
 }
 void NumItem::emitSignal()
 {
-    emit pressNumItem();
+    emit pressNumItem(num,rect());
+}
+int NumItem::number()
+{
+    return num;
 }
 void NumItem::show(QWidget *pwidget)
 {
     QPainter paint(pwidget);
     paint.setPen(Qt::black);
     paint.drawRect(0,0,rect().width()-1,rect().height()-1);
-    paint.setFont(QFont("宋体",20));
-    paint.drawText(QRect(0,0,rect().width()-1,rect().height()-1),Qt::AlignCenter,QString::number(num));
+    if(num!=0)
+    {
+        paint.setFont(QFont("宋体",20));
+        paint.drawText(QRect(0,0,rect().width()-1,rect().height()-1),Qt::AlignCenter,QString::number(num));
+    }
 }
 
 void MineItem::emitSignal()

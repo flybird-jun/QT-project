@@ -67,7 +67,7 @@ void MainWindow::actionDiffcultSlots()
 void MainWindow::winGame()
 {
     int ret;
-    QMessageBox *box = new QMessageBox(this);
+    MessageBox *box = new MessageBox(this);
     box->setText("你赢了");
     box->setWindowIcon(QIcon(":/win.png"));
     ret = box->exec();
@@ -83,7 +83,7 @@ void MainWindow::winGame()
 void MainWindow::lossGame()
 {
     int ret;
-    QMessageBox *box = new MessageBox(this);
+    MessageBox *box = new MessageBox(this);
     box->setText("你输了");
     box->setWindowIcon(QIcon(":/loss.png"));
     ret = box->exec();
