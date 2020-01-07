@@ -1,32 +1,65 @@
 #include"item.h"
-Item::Item(ItemState *state,QWidget * parent):QWidget(parent)
+#include<QtDebug>
+Item::Item(ItemState *state,const QRect &rect,QWidget * parent):QWidget(parent)
 {
     pState = state;
-    resize(pState->GetItemType()->rect().width(),pState->GetItemType()->rect().height());
-    move(pState->GetItemType()->rect().x(),pState->GetItemType()->rect().y());
+    _rect = rect;
+    resize(_rect.width(),_rect.height());
+    move(_rect.x(),_rect.y());
+    flag = false;
+}
+Item::ShowType Item::AroundShow()
+{
+    ItemType::ShowType __type = state()->GetItemType()->AroundShow();
+    return (Item::ShowType)__type;
 }
 void Item::paintEvent(QPaintEvent *event)
 {
-    pState->show(this);
-   // repaint();
+    pState->show(this,_rect);
 }
 void Item::mousePressEvent(QMouseEvent *evt)
 {
     if(evt->button()==Qt::RightButton)
     {
-       ItemState*iState=pState->ItemStateChange();
-       delete pState;
-       pState=iState;
+        changeState();
+    }
+    else if(evt->button()==Qt::LeftButton)
+    {
+        ItemType * _type = pState->GetItemType();
+        changeToOpenItem();
+        _type->emitSignal();//左键信号只能发射一次
+       // _type->disconnect();
+        evt->ignore();
+    }
+    qDebug()<<"event type"<<evt->x()<<" "<<evt->y()<<endl;
+    //repaint();
+}
+void Item::changeToOpenItem()
+{
+    ItemState *newState = nullptr;
+    ItemType * _type = pState->GetItemType();
+    newState = new openItem(_type);
+    delete pState;
+    pState = newState;
+}
+void Item::changeState()
+{
+    ItemState *newState = nullptr;
+    ItemType * _type = pState->GetItemType();
+    if(typeid (*pState) == typeid(tipItem))
+    {
+        newState = new normalItem(_type);
+    }
+    else if(typeid(*pState)==typeid(normalItem))
+    {
+        newState = new tipItem(_type);
     }
     else
     {
-        ItemState*iState= pState->ItemStateChangeToOpenItem();;
-        delete pState;
-        pState=iState;
-        pState->GetItemType()->__mousePressEvent(evt);
-        pState->GetItemType()->disconnect();
+        return;
     }
-    repaint();
+    delete pState;
+    pState = newState;
 }
 void Item::changeState(ItemState *state)
 {

@@ -8,44 +8,29 @@ ItemType * ItemState::GetItemType()
 {
     return type;
 }
-openItem* ItemState::ItemStateChangeToOpenItem()
-{
-    ItemType *m_type = GetItemType();
-    return new openItem(m_type);
-}
-openItem::openItem(ItemType *ptype):ItemState(ptype)
-{
-   // ptype->disconnect();
-}
-ItemState* tipItem::ItemStateChange()
-{
-    return new normalItem(type);
-}
-void tipItem::show(QWidget *pwidget)
+
+void tipItem::show(QWidget *pwidget,const QRect &rect)
 {
     QPainter paint(pwidget);
     paint.setPen(Qt::black);
-    paint.drawRect(0,0,type->rect().width()-1,type->rect().height()-1);
-    paint.drawPixmap(0,1,type->rect().width()-1,type->rect().height()-1,QPixmap(":/flag.png"));
+    paint.drawRect(0,0,rect.width()-1,rect.height()-1);
+    paint.drawPixmap(0,1,rect.width()-1,rect.height()-1,QPixmap(":/flag.png"));
 }
-void normalItem::show(QWidget *pwidget)
+void normalItem::show(QWidget *pwidget,const QRect &rect)
 {
     QPainter paint(pwidget);
     paint.setPen(Qt::black);
     paint.setBrush(Qt::green);
-    paint.drawRect(0,0,type->rect().width()-1,type->rect().height()-1);
+    paint.drawRect(0,0,rect.width()-1,rect.height()-1);
 }
-ItemState* normalItem::ItemStateChange()
+/*
+openItem::openItem(ItemType *ptype):ItemState(ptype)
 {
-    return new tipItem(type);
-}
-void openItem::show(QWidget *pwidget)
+
+}*/
+void openItem::show(QWidget *pwidget,const QRect &rect)
 {
-    type->show(pwidget);
-}
-ItemState* openItem::ItemStateChange()
-{
-    return new openItem(type);
+    type->show(pwidget,rect);
 }
 
 

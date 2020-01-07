@@ -5,13 +5,27 @@ class Item:public QWidget
 {
 private:
   ItemState *pState;
+  QRect _rect;
 public:
-  Item(ItemState *state,QWidget * parent=nullptr);
-  void paintEvent();
+  enum ShowType
+  {
+      NORMAL_SHOW=0,
+      AROUND_SHOW,
+      DISABLE_SHOW
+  };
+  Item(ItemState *state,const QRect &rect,QWidget * parent=nullptr);
   void changeState(ItemState *state);
   void paintEvent(QPaintEvent *event);
-  ItemState * state();
   virtual void mousePressEvent(QMouseEvent *evt);
+  ItemState * state();
+  void changeState();
+  ShowType AroundShow();
+  void changeToOpenItem();
+
+
+
   virtual ~Item();
+
+  bool flag;//访问标志
 };
 #endif

@@ -6,45 +6,58 @@
 class ItemType:public QObject
 {
     Q_OBJECT
-private:
-    QRect _rect;
 protected:
-    bool iEmit;//每个item只能发送一次信号
+    int num;
 public:
-    bool flag;
-    ItemType(QRect irect):_rect(irect){iEmit = false;}
-    virtual void show(QWidget *pwidget)=0;
-    virtual void __mousePressEvent(QMouseEvent *evt);
-    virtual bool AroundShow() = 0;
+   // bool flag;
+   // ItemType()
+    enum ShowType
+    {
+        NORMAL_SHOW=0,
+        AROUND_SHOW,
+        DISABLE_SHOW
+    };
+    ItemType(int count){num=count;}
+    virtual void show(QWidget *pwidget,const QRect &rect)=0;
+    virtual ShowType AroundShow() = 0;
     virtual void emitSignal()=0;
     virtual ~ItemType(){};
-    QRect rect();
 };
 class NumItem:public ItemType
 {
    Q_OBJECT
 signals:
-    void pressNumItem(int count,QRect rect);
-private:
-    int num;
+    void NumItemSignal();
 public:
-    NumItem(QRect irect,int num);
+    NumItem(int count);
     virtual void emitSignal();
-    virtual void show(QWidget *pwidget);
-    virtual bool AroundShow() {return true;}
-    int number();
+    virtual void show(QWidget *pwidget,const QRect &rect);
+    virtual ShowType AroundShow();
     ~NumItem(){}
+};
+class ZeroItem:public ItemType
+{
+  Q_OBJECT
+signals:
+    void ZeroItemSignal();
+public:
+    ZeroItem();
+    virtual void emitSignal();
+    virtual void show(QWidget *pwidget,const QRect &rect);
+    virtual ShowType AroundShow();
+    ~ZeroItem(){}
+
 };
 class MineItem:public ItemType
 {
     Q_OBJECT
 signals:
-    void pressMineItem();
+    void MineItemSignal();
 public:
-    using ItemType::ItemType;
+    MineItem();
     virtual void emitSignal();
-    virtual void show(QWidget *pwidget);
-    virtual bool AroundShow() {return false;}
+    virtual void show(QWidget *pwidget,const QRect &rect);
+     virtual ShowType AroundShow();
     ~MineItem(){};
 };
 #endif
