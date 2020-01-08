@@ -11,15 +11,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     //菜单栏
-    //connect(ui->menu,&QMenu::aboutToShow,this,&MainWindow::newGameSlots);
-    connect(ui->menu,&QMenu::aboutToShow,this,&MainWindow::lossGame);
+    connect(ui->menu,&QMenu::aboutToShow,this,&MainWindow::newGameSlots);
     connect(ui->actioneasy,&QAction::triggered,this,&MainWindow::actionEasySlots);
     connect(ui->actionnormal,&QAction::triggered,this,&MainWindow::actionNormalSlots);
     connect(ui->actiondiffcult,&QAction::triggered,this,&MainWindow::actionDiffcultSlots);
 
     //棋盘
-   // chess = new ChessWidget(10,10,30,this);
-    chess = new ChessWidget(20,20,30,this);
+    chess = new ChessWidget(10,10,30,this);
+    //chess = new ChessWidget(20,20,30,this);
     initChess();
 
 
@@ -32,8 +31,8 @@ void MainWindow::initChess()
 {
      chess->move(5,ui->menubar->height()+2);
      chess->setVisible(true);
-     connect(chess,&ChessWidget::GameWin,this,&MainWindow::winGame);
-     connect(chess,&ChessWidget::GameLoss,this,&MainWindow::newGameSlots);
+     connect(chess,&ChessWidget::GameWin,this,&MainWindow::GameWinSlot);
+     connect(chess,&ChessWidget::GameLoss,this,&MainWindow::GameLossSlot);
 
      resize(chess->width()+10,chess->height()+ui->menubar->height()+5);
 }
@@ -65,7 +64,7 @@ void MainWindow::actionDiffcultSlots()
     chess = new ChessWidget(20,20,30,this);
     repaint();
 }
-void MainWindow::winGame()
+void MainWindow::GameWinSlot()
 {
     int ret;
     MessageBox *box = new MessageBox(this);
@@ -82,14 +81,14 @@ void MainWindow::winGame()
     }
     delete box;
 }
-void MainWindow::lossGame()
+void MainWindow::GameLossSlot()
 {
     int ret;
     MessageBox *box = new MessageBox(this);
     box->setText("你输了");
     box->setWindowIcon(QIcon(":/loss.png"));
     ret = box->exec();
-   // chess->disconnect();
+    chess->disconnect();
     if(ret == 0)
     {
         newGame();

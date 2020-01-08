@@ -1,8 +1,10 @@
 #ifndef ITEM_H
 #define ITEM_H
+#include<QWidget>
 #include"ItemState.h"
 class Item:public QWidget
 {
+  Q_OBJECT
 private:
   ItemState *pState;
   QRect _rect;

@@ -159,6 +159,8 @@ void ChessWidget::mousePressEvent(QMouseEvent *event)
        QPoint pos = event->pos();
        coordinate.setX(pos.y()/CellWidth);
        coordinate.setY(pos.x()/CellWidth);
+       m_items[coordinate.x()][coordinate.y()]->state()->GetItemType()->emitSignal();
+       m_items[coordinate.x()][coordinate.y()]->state()->GetItemType()->disconnect();
        event->accept();
     }
 }
@@ -168,24 +170,20 @@ void ChessWidget::numItemPress()
 
     open_item_count++;
     m_items[coordinate.x()][coordinate.y()]->flag = true;
-}
-void ChessWidget::zeroItemSlot()
-{
-    numItemPress();
-  //  openAround(coordinate.x(),coordinate.y());
     if(open_item_count==num_item-mine_num)
     {
         emit GameWin();
     }
+}
+void ChessWidget::zeroItemSlot()
+{
+    numItemPress();
+    openAround(coordinate.x(),coordinate.y());
     repaint();
 }
 void ChessWidget::numItemSlot()
 {
     numItemPress();
-    if(open_item_count==num_item-mine_num)
-    {
-        emit GameWin();
-    }
     repaint();
 }
 

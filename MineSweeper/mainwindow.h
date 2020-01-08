@@ -19,8 +19,8 @@ public slots:
     void actionNormalSlots();
     void actionDiffcultSlots();
 
-    void winGame();
-    void lossGame();
+    void GameWinSlot();
+    void GameLossSlot();
 public:
     MainWindow(QWidget *parent = nullptr);
     void newGame();

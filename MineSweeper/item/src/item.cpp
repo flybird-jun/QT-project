@@ -25,9 +25,9 @@ void Item::mousePressEvent(QMouseEvent *evt)
     }
     else if(evt->button()==Qt::LeftButton)
     {
-        ItemType * _type = pState->GetItemType();
+        //ItemType * _type = pState->GetItemType();
         changeToOpenItem();
-        _type->emitSignal();//左键信号只能发射一次
+       // _type->emitSignal();//左键信号只能发射一次
        // _type->disconnect();
         evt->ignore();
     }
