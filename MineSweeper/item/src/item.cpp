@@ -32,7 +32,7 @@ void Item::mousePressEvent(QMouseEvent *evt)
         evt->ignore();
     }
     qDebug()<<"event type"<<evt->x()<<" "<<evt->y()<<endl;
-    //repaint();
+    repaint();
 }
 void Item::changeToOpenItem()
 {
